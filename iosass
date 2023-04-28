@@ -609,3 +609,121 @@ class GameCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var cellLabel: UILabel!
     var playerId: Int = 0
 }
+
+
+================================================================================================
+
+ViewController.shift
+-------------------------------------------
+
+import UIKit
+
+class ViewController: UIViewController {
+    
+    private let myTableview = UITableView()
+    
+    private var cityArray = [[String:Any] ]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        cityArray.append(["State":"Assam","City":"Dispur"])
+        cityArray.append(["State":"Bihar","City":"Patna"])
+        cityArray.append(["State":"Assam","City":"Dispur"])
+        cityArray.append(["State":"Goa","City":"Panaji"])
+        cityArray.append(["State":"Gujarat","City":"Gandhinagar"])
+        cityArray.append(["State":"Chhattisgarh","City":"Raipur"])
+        cityArray.append(["State":"Punjab","City":"Chandigarh"])
+        cityArray.append(["State":"Sikkim","City":"Gangtok"])
+        cityArray.append(["State":"Nagaland","City":"Kohima"])
+        cityArray.append(["State":"Tamil Nadu","City":"Hyderabad"])
+        view.addSubview(myTableview)
+        
+        setupCell()
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        
+        myTableview.frame = CGRect(x: 0, y: view.safeAreaInsets.top+30, width: view.width, height: view.height)
+        
+    }
+    
+    
+}
+
+extension ViewController : UITableViewDataSource,UITableViewDelegate{
+    
+    func setupCell(){
+        myTableview.dataSource = self
+        myTableview.delegate = self
+        myTableview.register(CityCell.self, forCellReuseIdentifier: "CityCell")
+        myTableview.rowHeight = 100
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+            return cityArray.count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CityCell", for: indexPath) as! CityCell
+        
+           let state = cityArray[indexPath.row]["State"] as? String
+            let city = cityArray[indexPath.row]["City"] as? String
+             cell.setupCityCellWith(title: state!, discription: city!)
+            
+        
+        return cell
+    }
+    
+}
+
+-----------------------------------------
+Extension.swift
+----------------------------------------
+
+import Foundation
+import UIKit
+
+extension UIView {
+    public var width: CGFloat { return frame.size.width }
+    public var height: CGFloat { return frame.size.height }
+    public var top: CGFloat { return frame.origin.y }
+    public var bottom: CGFloat { return frame.origin.y + frame.size.height }
+    public var left: CGFloat { return frame.origin.x }
+    public var right: CGFloat { return frame.origin.x + frame.size.width }
+}
+
+-----------------------------------------
+CityCell.swift
+-----------------------------------------
+
+
+import UIKit
+
+class CityCell: UITableViewCell {
+    
+    
+    private let title = UILabel()
+    
+    private let discription = UILabel()
+    
+    private func setupUI(){
+       contentView.addSubview(title)
+        contentView.addSubview(discription)
+       
+        title.frame = CGRect(x: 20, y: 10, width: contentView.width - 90, height: 40)
+        title.font = title.font.withSize(30)
+        discription.frame = CGRect(x: 20, y: title.bottom + 5, width: contentView.width - 90, height: 40)
+        discription.font = discription.font.withSize(20)
+    }
+    
+    func setupCityCellWith(title name:String, discription desc:String){
+        title.text = name
+        discription.text = desc
+        setupUI()
+    }
+}
+
